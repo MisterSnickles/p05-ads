@@ -19,7 +19,8 @@ public:
     void quick_sort();
     void quick_sort(int option);
     void merge_sort();
-
+    void recursive_merge_sort(int low, int high);
+    void merge(int low, int high);
 protected:
     int count;
     Entry entry[max_entry];
@@ -304,4 +305,51 @@ Post: The entries of the Sortable have been rearranged so
 */
 {
    // TODO 2: implement merge_sort
+   recursive_merge_sort(0, count-1);
+}
+
+
+template <class Entry>
+void Sortable<Entry>::recursive_merge_sort(int low, int high){
+   if(low < high){
+      int mid = (low + high)/2;
+      recursive_merge_sort(low, mid);
+      recursive_merge_sort(mid + 1, high);
+      merge(low, high);
+   }
+}
+
+
+template <class Entry>
+void Sortable<Entry>::merge(int low, int high){
+   Entry* temp = new Entry[high - low + 1];
+   int index = 0;
+   int index1 = low;
+   int mid = (low + high) / 2;
+   int index2 = mid + 1;
+   while (index1 <= mid && index2 <= high){
+      if (entry[index1] < entry[index2]){
+         temp[index] = entry[index1];
+         index++;
+         index1++;
+      } else {
+         temp[index] = entry[index2];
+         index++;
+         index2++;
+      }
+   }
+   while(index1 <= mid){
+      temp[index] = entry[index1];
+      index++;
+      index1++;
+   }
+   while(index2 <= high){
+      temp[index] = entry[index2];
+      index++;
+      index2++;
+   }
+   for(index = low; index <= high; index++){
+      entry[index] = temp[index - low];
+   }
+   delete[] temp;
 }

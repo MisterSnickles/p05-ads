@@ -66,7 +66,7 @@ void TestQuicksort() {
 
   // if you are not using Windows, there might be an error for the following mkdir() function
   // and then try the one commented below or fix it by own method
-  //int status = mkdir(path.c_str(), 0755);
+  // int status = mkdir(path.c_str(), 0755);
   int status = mkdir(path.c_str());
   if (status == 0) {
     cout << "Diretory created." << endl;
