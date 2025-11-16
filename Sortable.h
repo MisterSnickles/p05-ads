@@ -295,6 +295,20 @@ Post: The entries of the Sortable have been
 {
    // TODO 1: implement quicksort with different pivot strategies
 
+   switch (option){
+      case 1:
+         
+         break;
+      case 2:
+
+         break;
+      case 3:
+
+         break;
+      case 4:
+
+         break;
+   }
 }
 
 template <class Entry>

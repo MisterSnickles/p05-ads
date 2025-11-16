@@ -87,7 +87,7 @@ void TestQuicksort() {
   }
 
   // manage test output files
-  const int max_option = 5; // including the one from the lecture
+  const int max_option = 6; // option 0 = left center quick sort from lecture. options 1-4 = different pivot strategies. option 5 = merge sort
   ofstream sorted[max_option];
   ofstream durations[max_option];
   for (int idx = 0; idx < max_option; idx++) {
@@ -117,16 +117,16 @@ void TestQuicksort() {
       
       for (int idx = 0; idx < max_option; idx++) {
         // TODO 3: modify this part to include merge_sort in the comparison
-
-
-
+        
         Sortable<int> sortable(arr, size);
         start = clock();
         if (idx == 0) {
           sortable.quick_sort();
         }
-        else {
+        else if(idx >=1 && idx <=4){ 
           sortable.quick_sort(idx);
+        } else if(idx == 5){
+          sortable.merge_sort(); 
         }
         finish = clock();
 
