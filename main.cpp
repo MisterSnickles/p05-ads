@@ -3,6 +3,8 @@
 #include <string>
 #include <sys/stat.h>
 #include "Sortable.h"
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 

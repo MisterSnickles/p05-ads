@@ -249,12 +249,12 @@ Post: The center (or left center) entry in the range between indices
    pivot = entry[low];   //  First entry is now pivot.
    last_small = low;
    for (i = low + 1; i <= high; i++)
-/*
-At the beginning of each iteration of this loop, we have the following
-conditions:
-        If low < j <= last_small then entry[j].key < pivot.
-        If last_small < j < i then entry[j].key >= pivot.
-*/
+      /*
+      At the beginning of each iteration of this loop, we have the following
+      conditions:
+            If low < j <= last_small then entry[j].key < pivot.
+            If last_small < j < i then entry[j].key >= pivot.
+      */
       if (entry[i] < pivot) {
          last_small = last_small + 1;
          swap(last_small, i);  //  Move large entry to right and small to left.
@@ -294,21 +294,86 @@ Post: The entries of the Sortable have been
 */
 {
    // TODO 1: implement quicksort with different pivot strategies
+   
+   if (low >= high) {
+      return; 
+   }
+
+   int pivot_position;
+   int middle = (low + high) / 2;
 
    switch (option){
-      case 1:
+      case 1: {
+         //choose the first element as our pivot point
+         pivot_position = low;      
+         break;
+      }
+      case 2: {
+         //choose a random element as our pivot point
          
+         pivot_position = low + rand() % (high - low + 1);  
+            // the rand() function generates a random integer from 0 to RAND_MAX (32767 in most systems)
+            // add to low to make sure the random number is at least low
+            // taking mod from the difference of high and low makes sure the random number is within the range
          break;
-      case 2:
+      }
+      case 3: {
+         // choose the median (middle) of three elements chosen at random as our pivot point 
+         
+         // get three random positions
+         int r1 = low + rand() % (high - low + 1);
+         int r2 = low + rand() % (high - low + 1);
+         int r3 = low + rand() % (high - low + 1);
+         
+         //get the three entries
+         Entry e1 = entry[r1];
+         Entry e2 = entry[r2];
+         Entry e3 = entry[r3];
+         
+         //find median of the entries
+         if ((e1 <= e2 && e1 >= e3) || 
+             (e1 >= e2 && e1 <= e3)){
+            pivot_position = r1;
+         } else if ((e2 <= e1 && e2 >= e3) || 
+                    (e2 >= e1 && e2 <= e3)){
+            pivot_position = r2;
+         } else {
+            pivot_position = r3;
+         }
+
 
          break;
-      case 3:
-
+      }
+      case 4: {
+         // choose the median (middle) of the first, middle, and last elements as our pivot point
+         Entry first = entry[low];
+         Entry center = entry[middle];
+         Entry last = entry[high];
+         
+         if ((first <= center && first >= last) || 
+             (first >= center && first <= last)){
+            pivot_position = low;
+         } else if ((center <= first && center >= last) || 
+                    (center >= first && center <= last)){
+            pivot_position = middle;
+         } else {
+            pivot_position = high;
+         }
          break;
-      case 4:
-
+      }
+      default: {
+         // should not reach here
+         pivot_position = middle;
          break;
+      }
    }
+
+
+   std::swap(entry[middle], entry[pivot_position]); // put pivot at the center
+   int new_pivot = partition(low, high);
+
+   recursive_quick_sort(low, new_pivot - 1, option);
+   recursive_quick_sort(new_pivot + 1, high, option);
 }
 
 template <class Entry>
