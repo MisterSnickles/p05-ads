@@ -294,7 +294,81 @@ Post: The entries of the Sortable have been
 */
 {
    // TODO 1: implement quicksort with different pivot strategies
+   if (low < high) 
+   {
+      int pivot_index;
+      int center = (low + high) / 2;
 
+
+      // Chose Pivot Index based on option
+      switch (option) 
+      {
+         case 1: // first element
+            pivot_index = low;
+            break;
+
+         case 2: // random element
+            pivot_index = low + rand() % (high - low + 1);
+            break;
+
+         case 3: // median of 3 random elements
+            {
+               int r1 = low + rand() % (high - low + 1);
+               int r2 = low + rand() % (high - low + 1);
+               int r3 = low + rand() % (high - low + 1);
+
+               // finding the median
+               if ((entry[r1] < entry[r2] && entry[r2] < entry[r3]) || (entry[r3] < entry[r2] && entry[r2] < entry[r1])) {
+                  pivot_index = r2;
+               }
+               else if ((entry[r2] < entry[r1] && entry[r1] < entry[r3]) || (entry[r3] < entry[r1] && entry[r1] < entry[r2])) {
+                  pivot_index = r1;
+               }
+               else {
+                  pivot_index = r3;
+               }   
+            }
+            break;
+
+         case 4: // median of first, center, and last
+            {
+               if ((entry[low] < entry[center] && entry[center] < entry[high]) || (entry[high] < entry[center] && entry[center] < entry[low])) {
+                  pivot_index = center;
+               }
+               else if ((entry[center] < entry[low] && entry[low] < entry[high]) || (entry[high] < entry[low] && entry[low] < entry[center])) {
+                  pivot_index = low;
+               }
+               else {
+                  pivot_index = high;
+               }   
+            }
+            break;
+      }
+
+      // swap chosen pivot to front
+      swap(low, pivot_index);
+
+      // takes logic from parition function and chages line 355 so that we can use this for the
+      // quick sort function
+      Entry pivot;
+      int i, last_small;   //  position of the last key less than pivot
+      // swap(low, (low + high) / 2);
+      pivot = entry[low];   //  First entry is now pivot.
+      last_small = low;
+      for (i = low + 1; i <= high; i++)
+      {
+         if (entry[i] < pivot) {
+            last_small = last_small + 1;
+            swap(last_small, i);  //  Move large entry to right and small to left.
+         }
+      }
+      swap(low, last_small);      //  Put the pivot into its proper position.
+      int pivot_position = last_small;
+
+      // recurse
+      recursive_quick_sort(low, pivot_position - 1, option);
+      recursive_quick_sort(pivot_position + 1, high, option);
+   }
 }
 
 template <class Entry>
