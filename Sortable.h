@@ -19,7 +19,8 @@ public:
     void quick_sort();
     void quick_sort(int option);
     void merge_sort();
-
+    void recursive_merge_sort(int low, int high);
+    void merge(int low, int high);
 protected:
     int count;
     Entry entry[max_entry];
@@ -248,12 +249,12 @@ Post: The center (or left center) entry in the range between indices
    pivot = entry[low];   //  First entry is now pivot.
    last_small = low;
    for (i = low + 1; i <= high; i++)
-/*
-At the beginning of each iteration of this loop, we have the following
-conditions:
-        If low < j <= last_small then entry[j].key < pivot.
-        If last_small < j < i then entry[j].key >= pivot.
-*/
+      /*
+      At the beginning of each iteration of this loop, we have the following
+      conditions:
+            If low < j <= last_small then entry[j].key < pivot.
+            If last_small < j < i then entry[j].key >= pivot.
+      */
       if (entry[i] < pivot) {
          last_small = last_small + 1;
          swap(last_small, i);  //  Move large entry to right and small to left.
@@ -293,7 +294,86 @@ Post: The entries of the Sortable have been
 */
 {
    // TODO 1: implement quicksort with different pivot strategies
+   
+   if (low >= high) {
+      return; 
+   }
 
+   int pivot_position;
+   int middle = (low + high) / 2;
+
+   switch (option){
+      case 1: {
+         //choose the first element as our pivot point
+         pivot_position = low;      
+         break;
+      }
+      case 2: {
+         //choose a random element as our pivot point
+         
+         pivot_position = low + rand() % (high - low + 1);  
+            // the rand() function generates a random integer from 0 to RAND_MAX (32767 in most systems)
+            // add to low to make sure the random number is at least low
+            // taking mod from the difference of high and low makes sure the random number is within the range
+         break;
+      }
+      case 3: {
+         // choose the median (middle) of three elements chosen at random as our pivot point 
+         
+         // get three random positions
+         int r1 = low + rand() % (high - low + 1);
+         int r2 = low + rand() % (high - low + 1);
+         int r3 = low + rand() % (high - low + 1);
+         
+         //get the three entries
+         Entry e1 = entry[r1];
+         Entry e2 = entry[r2];
+         Entry e3 = entry[r3];
+         
+         //find median of the entries
+         if ((e1 <= e2 && e1 >= e3) || 
+             (e1 >= e2 && e1 <= e3)){
+            pivot_position = r1;
+         } else if ((e2 <= e1 && e2 >= e3) || 
+                    (e2 >= e1 && e2 <= e3)){
+            pivot_position = r2;
+         } else {
+            pivot_position = r3;
+         }
+
+
+         break;
+      }
+      case 4: {
+         // choose the median (middle) of the first, middle, and last elements as our pivot point
+         Entry first = entry[low];
+         Entry center = entry[middle];
+         Entry last = entry[high];
+         
+         if ((first <= center && first >= last) || 
+             (first >= center && first <= last)){
+            pivot_position = low;
+         } else if ((center <= first && center >= last) || 
+                    (center >= first && center <= last)){
+            pivot_position = middle;
+         } else {
+            pivot_position = high;
+         }
+         break;
+      }
+      default: {
+         // should not reach here
+         pivot_position = middle;
+         break;
+      }
+   }
+
+
+   std::swap(entry[middle], entry[pivot_position]); // put pivot at the center
+   int new_pivot = partition(low, high);
+
+   recursive_quick_sort(low, new_pivot - 1, option);
+   recursive_quick_sort(new_pivot + 1, high, option);
 }
 
 template <class Entry>
@@ -304,4 +384,51 @@ Post: The entries of the Sortable have been rearranged so
 */
 {
    // TODO 2: implement merge_sort
+   recursive_merge_sort(0, count-1);
+}
+
+
+template <class Entry>
+void Sortable<Entry>::recursive_merge_sort(int low, int high){
+   if(low < high){
+      int mid = (low + high)/2;
+      recursive_merge_sort(low, mid);
+      recursive_merge_sort(mid + 1, high);
+      merge(low, high);
+   }
+}
+
+
+template <class Entry>
+void Sortable<Entry>::merge(int low, int high){
+   Entry* temp = new Entry[high - low + 1];
+   int index = 0;
+   int index1 = low;
+   int mid = (low + high) / 2;
+   int index2 = mid + 1;
+   while (index1 <= mid && index2 <= high){
+      if (entry[index1] < entry[index2]){
+         temp[index] = entry[index1];
+         index++;
+         index1++;
+      } else {
+         temp[index] = entry[index2];
+         index++;
+         index2++;
+      }
+   }
+   while(index1 <= mid){
+      temp[index] = entry[index1];
+      index++;
+      index1++;
+   }
+   while(index2 <= high){
+      temp[index] = entry[index2];
+      index++;
+      index2++;
+   }
+   for(index = low; index <= high; index++){
+      entry[index] = temp[index - low];
+   }
+   delete[] temp;
 }
