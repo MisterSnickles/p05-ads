@@ -9,6 +9,11 @@ This project evaluates the performance of the Quicksort algorithm using various 
 
 The program generates random integer arrays, sorts them using 5 different Quicksort variations and Mergesort, records the execution time, and averages the results over multiple trials to ensure a fair comparison. We used Excel to graph these statistics.
 
+Here are the time graphs for each sorting strategy listed below:
+
+![graph-a05](https://github.com/user-attachments/assets/9a170dff-dae1-41d5-be49-205d7b76e796)
+
+
 ## Implemented Algorithms
 
 ### Quicksort Strategies
